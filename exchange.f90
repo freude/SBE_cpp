@@ -1,0 +1,31 @@
+!--------------------------------------------------------
+!---------Exchange energy computation subroutine---------
+!--------------------------------------------------------
+
+subroutine exchange(k,l_k,ne,nh,V,exce)
+
+implicit none
+
+integer :: j				! counter
+
+integer :: l_k				! length of k array
+real :: stk				! length of k array
+real, dimension(l_k) :: k		! k-space (1st particle)
+real, dimension(l_k,l_k) :: V		! interactionmatrix
+real, dimension(l_k) :: ne		! Electrons distribution function
+real, dimension(l_k) :: nh		! Holes distribution function
+real, dimension(l_k) :: exce		! exchange energy
+real :: pi				! length of k array
+
+pi=3.14
+stk=k(3)-k(2)
+
+do j=1,l_k
+	exce(j)=sum(V(j,:)*(ne+nh)*k*stk)
+enddo 
+
+open(7,file='exce.dat')
+write (7,'(e15.7)'), exce
+
+return
+end subroutine exchange
