@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <fstream>
 #include "gain.h"
+#include <unistd.h>
+
 
 using namespace std;
 //using std::endl;
@@ -82,12 +84,17 @@ Vec_DP exce(l_k);
 Vec_DP exce1(l_k);
 int allowed[30];
 
-std::string gway="/home/mk/my_projects/SBE_cpp/";
+std::string gway;
 std::stringstream sstm;
 
 void gain()
 {
-	
+
+gway = get_current_dir_name();
+gway.append("/");
+cout << gway << endl;	
+
+
 //---------------------------Counters----------------------------
 
 int j, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15, j16, j17, j18, j19, j20, j21, j22, j23;
@@ -192,7 +199,7 @@ for (j1=0;j1<Nsb_e;j1++){						//loop for conduction subbands
 }
 
 ofstream outdata;
-outdata.open("/home/mk/my_projects/SBE_cpp/ps.dat",ios::in|ios::trunc);
+outdata.open(gway.append("ps.dat"),ios::in|ios::trunc);
 
 for (j=0;j<l_k;j++){
 outdata<<mu[0][0][j]<<endl;

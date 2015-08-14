@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <fstream>
 #include "gain.h"
+#include <unistd.h>
+
 
 using namespace std;
 //using std::endl;
@@ -19,8 +21,8 @@ using namespace std;
 #define l_k 400					//length of k array
 #define l_f 9000				//length of frequency array!
 
-const int Nsb_e=2;			//number of conduction subbands
-const int Nsb_h=8;			//number of valence subbands
+const int Nsb_e=1;			//number of conduction subbands
+const int Nsb_h=1;			//number of valence subbands
 
 
 //----------------Definition of constants-----------------
@@ -66,7 +68,6 @@ Mat_DP Eh(Nsb_h,l_k);
 Vec_DP mu11(l_k);
 Vec_DP Ee1(l_k);
 Vec_DP Eh1(l_k);
-
  
 Vec_DP ps1(l_f);
 Vec_DP ps(l_f);
@@ -83,12 +84,18 @@ Vec_DP exce(l_k);
 Vec_DP exce1(l_k);
 int allowed[30];
 
-std::string gway="/home/mk/results/InGaN_2nm_0d37_2003/N-face/1d0_1d0_1d4/";
+std::string gway;
 std::stringstream sstm;
 
 void gain()
 {
-	
+
+gway = get_current_dir_name();
+sstm << gway<<"/";			//conduction band data reading
+gway = sstm.str();
+cout << gway << endl;	
+
+
 //---------------------------Counters----------------------------
 
 int j, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15, j16, j17, j18, j19, j20, j21, j22, j23;
@@ -96,7 +103,7 @@ int j, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15, j16, j1
 //---------------------Band structure----------------------
 
 
-Eg[1][1]=1.7*e;		//nominal band gap
+Eg[0][0]=1.7*e;		//nominal band gap
 me=0.02*m0;				//electrons effective mass
 mh=0.5*m0;				//holes effective mass
 eps=12.3;				//permitivity
@@ -112,11 +119,11 @@ for (j1=0;j1<l_k;j1++){
 }
 
 fff_min=0.001;				//min fr
-fff_max=1.0*Eg[1][1]/h;				//max fr							
+fff_max=1.0*Eg[0][0]/h;				//max fr							
 stf=(fff_max-fff_min)/(l_f);	//step in fr-grid
 
 for (j1=0;j1<l_f;j1++){
-	fff[j1]=fff_min+j1*stf+Eg[1][1]/h;			// fr array
+	fff[j1]=fff_min+j1*stf+Eg[0][0]/h;			// fr array
 	}
 
 //--------------------------------------------------------------
@@ -127,20 +134,23 @@ for (j1=0;j1<l_f;j1++){
 std::stringstream sstm;
 string flnm;
 
+
+
 for (j1=0;j1<Nsb_e;j1++){						//loop for conduction subbands
-	sstm << gway<<"Ee"<<(j1+1)<<".dat";			//conduction band data reading
+	//sstm << gway<<"Ee"<<(j1+1)<<".dat";			//conduction band data reading
+	sstm << gway<<"Ee"<<".dat";			//conduction band data reading
 	flnm=sstm.str();
 	sstm.str(std::string());
 	std::ifstream in(flnm.c_str(),std::ios::out);
 	if(!in)
 	{  
-		std::cout<<"Could not open file"<<sstm.str()<<std::endl;
+		std::cout<<"Could not open file1"<<sstm.str()<<std::endl;
 		exit(0); 
 	}
 	j=0;
 	while (!in.eof() && j<l_k) {
 			in>>Ee[j1][j];
-			Ee[j1][j]=Ee[j1][j]*e/h;
+			Ee[j1][j]=Ee[j1][j];
 			j++;
 			}
     in.close();
@@ -148,32 +158,35 @@ for (j1=0;j1<Nsb_e;j1++){						//loop for conduction subbands
 	for (j2=0;j2<Nsb_h;j2++){					//loop for valence subbands
 	
 		if (j1==0){ 
-			sstm << gway<<"E"<<(j2+1)<<".dat";	//valence band data reading
+			//sstm << gway<<"E"<<(j2+1)<<".dat";	//valence band data reading
+			sstm << gway<<"Eh"<<".dat";	//valence band data reading
 			flnm=sstm.str();
 			sstm.str(std::string());
 			std::ifstream in(flnm.c_str(),std::ios::out);
 			if(!in)
 			{  
-				std::cout<<"Could not open file"<<sstm.str()<<std::endl;
+				std::cout<<"Could not open file2"<<sstm.str()<<std::endl;
 				exit(0); 
 			}
 			j=0;
 			while (!in.eof() && j<l_k) {
 				in>>Eh[j2][j];
-				Eh[j2][j]=Eh[j2][j]*e/h;
+				Eh[j2][j]=Eh[j2][j];
 				j++;
 			}
 			in.close();
 		}
 		
-		sstm << gway<<"me"<<(j2+1)<<(j1+1)<<"te.dat";	//matrix element data reading
+		
+		//sstm << gway<<"me"<<(j2+1)<<(j1+1)<<"te.dat";	//matrix element data reading
+		sstm << gway<<"me"<<".dat";	//matrix element data reading
 		flnm=sstm.str();
 		sstm.str(std::string());
 		cout<<flnm<<"\n";
 		std::ifstream in(flnm.c_str(),std::ios::out);
 		if(!in)
 		{  
-			std::cout<<"Could not open file"<<sstm.str()<<std::endl;
+			std::cout<<"Could not open file3"<<sstm.str()<<std::endl;
 			exit(0); 
 		}
 		j=0;
@@ -187,16 +200,16 @@ for (j1=0;j1<Nsb_e;j1++){						//loop for conduction subbands
 }
 
 ofstream outdata;
-outdata.open("/home/mk/science/Cpp_programms/SBE_project/src/ps.dat",ios::in|ios::trunc);
+outdata.open("/home/mk/my_projects/SBE_cpp/ps.dat",ios::in|ios::trunc);
 
 for (j=0;j<l_k;j++){
-outdata<<mu[1][1][j]<<endl;
+outdata<<mu[0][0][j]<<endl;
 }
 
 outdata.close();
 
 FILE* Gplt = popen("gnuplot -persist","w");
-fprintf(Gplt,"plot '/home/mk/science/Cpp_programms/SBE_project/src/ps.dat' with lines \n");	
+fprintf(Gplt,"plot '/home/mk/my_projects/SBE_cpp/ps.dat' with lines \n");	
 fflush(Gplt);
 pclose(Gplt);
 
@@ -209,12 +222,12 @@ pclose(Gplt);
 //------------------------Plasma parameters---------------------
 
 Tempr=300.0;
-conc=8.85e11;
+conc=8.85e14;
 
 
 //  call concentration(k,l_k,ne,conc)
-Ef_e=Fermi_level(k, 2,'c',Tempr,conc,Ee);
-Ef_h=Fermi_level(k, 8,'v',Tempr,conc,Eh);
+Ef_e=Fermi_level(k, 1,'c',Tempr,conc,Ee);
+Ef_h=Fermi_level(k, 1,'v',Tempr,conc,Eh);
 
 cout<<Ef_e<<"\n";
 cout<<Ef_h<<"\n";
@@ -224,7 +237,7 @@ cout<<Ef_h<<"\n";
 
 //call int_matrix(k,l_k,mh,me,nh(1),ne(1),conc,Tempr,eps,11,gway,V)
 
-int_matrix(k,mh,me,nh,ne,conc,Tempr,eps,11,gway,V);
+int_matrix(k,mh,me,nh,ne,conc,Tempr,eps,10,gway,V);
 
 //--------------------------------------------------------------
 //----------------Computing the polarization--------------------
@@ -254,14 +267,14 @@ for (j1=0;j1<Nsb_e;j1++){
 	}
 }
 
-outdata.open("/home/mk/science/Cpp_programms/gain/src/ps.dat",ios::in|ios::trunc);
+outdata.open("/home/mk/my_projects/SBE_cpp/ps.dat",ios::in|ios::trunc);
 
 for (j=0;j<l_f;j++) outdata<<fff[j]*h/e<<" "<<ps[j]<<endl;
 
 outdata.close();
 
 Gplt = popen("gnuplot -persist","w");
-fprintf(Gplt,"plot '/home/mk/science/Cpp_programms/gain/src/ps.dat' with lines \n");	
+fprintf(Gplt,"plot '/home/mk/my_projects/SBE_cpp/ps.dat' with lines \n");	
 fflush(Gplt);
 pclose(Gplt);
 
