@@ -76,8 +76,7 @@ do j1=1,l_k
 				f_f=p(1)*(q**8.0)+p(2)*(q**7.0)+p(3)*(q**6.0)+p(4)*(q**5.0)+p(5)*(q**4.0)+p(6)*(q**3.0)+p(7)*(q**2.0)+p(8)*q+p(9)
 				!epss=ccc(1)+ccc(2)*q+ccc(3)*(q**2.0)+ccc(4)*(q**3.0)+ccc(5)*(q**4.0)+ccc(6)*(q**5.0)+ccc(7)*(q**6.0)+ccc(8)*(q**7.0)+ccc(9)*(q**8.0)
                 !f_f=1.0
-				!call dielectrical_const(q,mh,me,nh,ne,conc,Tempr,epss)	
-				epss=1.0
+				call dielectrical_const(q,mh,me,nh,ne,conc,Tempr,epss)	
 				V(j1,j2)=V(j1,j2)+f_f*(epss*(e**2.0)/(8.0*(pi**2.0)*eps*eps0*q))*abs(phi(2)-phi(1))
        		
 	    enddo
@@ -88,8 +87,7 @@ do j1=1,l_k
 				f_f=p(1)*(q**8.0)+p(2)*(q**7.0)+p(3)*(q**6.0)+p(4)*(q**5.0)+p(5)*(q**4.0)+p(6)*(q**3.0)+p(7)*(q**2.0)+p(8)*q+p(9)
 				!epss=ccc(1)+ccc(2)*q+ccc(3)*(q**2.0)+ccc(4)*(q**3.0)+ccc(5)*(q**4.0)+ccc(6)*(q**5.0)+ccc(7)*(q**6.0)+ccc(8)*(q**7.0)+ccc(9)*(q**8.0)
                 !f_f=1.0
-				!call dielectrical_const(q,mh,me,nh,ne,conc,Tempr,epss)	
-				epss=1.0
+				call dielectrical_const(q,mh,me,nh,ne,conc,Tempr,epss)	
 				V(j1,j2)=V(j1,j2)+f_f*(epss*(e**2.0)/(8.0*(pi**2.0)*eps*eps0*q))*abs(phi(2)-phi(1))
 	    enddo
         endif
